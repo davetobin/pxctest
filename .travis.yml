@@ -6,9 +6,6 @@ before_install:
   - mkdir -p ~/Library/Logs/DiagnosticReports
 script:
   - diskutil erasevolume HFS+ 'pxctest' `hdiutil attach -nomount ram://4194304`
-  - df -h
-  - ls -la /Volums/pxctest
-  - exit 1
   - set -o pipefail
   - scripts/bootstrap.sh
   - NSUnbufferedIO=YES xcodebuild -scheme pxctest test | xcpretty -c

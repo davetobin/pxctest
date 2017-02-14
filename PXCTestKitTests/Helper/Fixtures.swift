@@ -14,6 +14,8 @@ let fixtures = Fixtures()
 
 final class Fixtures {
 
+    private var fileManager = FileManager.default
+
     private var bundle: Bundle {
         return Bundle(for: type(of: self))
     }
@@ -70,8 +72,15 @@ final class Fixtures {
     // MARK: - Helper
 
     func createNewTemporaryDirectory() throws -> URL {
-        let temporaryDirectory = URL(fileURLWithPath: "\(NSTemporaryDirectory())/\(UUID().uuidString)")
-        try FileManager.default.createDirectory(at: temporaryDirectory, withIntermediateDirectories: true, attributes: nil)
+        let temporaryDirectory: URL
+        // RamDisk exists on Travis?
+        if fileManager.fileExists(atPath: "/Volumes/pxctest") {
+            temporaryDirectory = URL(fileURLWithPath: "/Volumes/pxctest/\(UUID().uuidString)")
+        }
+        else {
+           temporaryDirectory = URL(fileURLWithPath: "\(NSTemporaryDirectory())/\(UUID().uuidString)")
+        }
+        try fileManager.createDirectory(at: temporaryDirectory, withIntermediateDirectories: true, attributes: nil)
         return temporaryDirectory
     }
 
